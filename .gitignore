@@ -1,6 +1,10 @@
 __pycache__/
 *.pyc
 *.zip
+captura_*.png
+visualizacao_banco*.png
+visualizar_banco.py
+Abrir Banco.bat
 .venv/
 venv/
 sistema_aprendizes_v1_codigo/

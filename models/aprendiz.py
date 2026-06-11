@@ -4,28 +4,28 @@ from typing import Any, Mapping
 
 @dataclass
 class Aprendiz:
-    nome_completo: str
-    supervisor_responsavel: str
+    nome: str
+    cpf: str
+    setor: str
+    observacao: str
+    supervisor_id: int
     data_cadastro: str
     id: int | None = None
-    data_nascimento: str = ""
-    data_admissao: str = ""
-    setor: str = ""
-    observacoes: str = ""
-    status: str = "Ativo"
+    ativo: bool = True
     data_atualizacao: str = ""
+    supervisor_nome: str = ""
 
     @classmethod
     def from_row(cls, row: Mapping[str, Any]) -> "Aprendiz":
         return cls(
             id=row["id"],
-            nome_completo=row["nome_completo"],
-            supervisor_responsavel=row["supervisor_responsavel"],
-            data_nascimento=row["data_nascimento"] or "",
-            data_admissao=row["data_admissao"] or "",
+            nome=row["nome"],
+            cpf=row["cpf"],
             setor=row["setor"] or "",
-            observacoes=row["observacoes"] or "",
-            status=row["status"],
+            observacao=row["observacao"] or "",
+            supervisor_id=row["supervisor_id"],
+            supervisor_nome=row["supervisor_nome"] if "supervisor_nome" in row.keys() else "",
+            ativo=bool(row["ativo"]),
             data_cadastro=row["data_cadastro"],
             data_atualizacao=row["data_atualizacao"] or "",
         )

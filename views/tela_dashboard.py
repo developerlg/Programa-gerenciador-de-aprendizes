@@ -6,7 +6,6 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QHeaderView,
     QLabel,
-    QPushButton,
     QScrollArea,
     QTableWidget,
     QTableWidgetItem,
@@ -48,7 +47,7 @@ class DashboardView(QWidget):
 
         title = QLabel("Dashboard")
         title.setObjectName("pageTitle")
-        subtitle = QLabel("Resumo geral das atividades")
+        subtitle = QLabel("Resumo geral do sistema")
         subtitle.setObjectName("mutedText")
         main_column.addWidget(title)
         main_column.addWidget(subtitle)
@@ -81,7 +80,6 @@ class DashboardView(QWidget):
         sidebar.setSpacing(18)
         sidebar.addWidget(self._pending_panel())
         sidebar.addWidget(self._deadlines_panel())
-        sidebar.addWidget(self._quick_actions_panel())
         sidebar.addStretch()
 
         sidebar_box = QWidget()
@@ -153,7 +151,13 @@ class DashboardView(QWidget):
 
     def _service_chart_panel(self) -> Panel:
         panel = Panel("Atividades por tipo de servico")
-        panel.layout.addWidget(BarChartWidget(self.dados["service_chart"]))
+        if self.dados["service_chart"]:
+            panel.layout.addWidget(BarChartWidget(self.dados["service_chart"]))
+        else:
+            empty = QLabel("Aguardando registros de atividades.")
+            empty.setObjectName("mutedText")
+            empty.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            panel.layout.addWidget(empty)
         return panel
 
     def _pending_panel(self) -> Panel:
@@ -196,21 +200,6 @@ class DashboardView(QWidget):
             empty.setObjectName("mutedText")
             empty.setWordWrap(True)
             panel.layout.addWidget(empty)
-        return panel
-
-    def _quick_actions_panel(self) -> Panel:
-        panel = Panel("Acoes rapidas")
-        actions = [
-            "Cadastrar novo aprendiz",
-            "Registrar nova atividade",
-            "Gerar relatorio mensal",
-            "Fazer backup dos dados",
-        ]
-        for label in actions:
-            button = QPushButton(label)
-            button.setObjectName("secondaryButton")
-            button.setCursor(Qt.CursorShape.PointingHandCursor)
-            panel.layout.addWidget(button)
         return panel
 
     def _legend_item(self, label: str, value: int, color: str) -> QWidget:

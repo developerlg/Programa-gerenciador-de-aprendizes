@@ -20,5 +20,5 @@ class AprendizController:
     def inativar_aprendiz(self, aprendiz_id: int) -> None:
         self.service.inativar(aprendiz_id)
 
-    def listar_supervisores(self) -> list[str]:
-        return self.service.listar_supervisores()
+    def listar_supervisores_ativos(self) -> list[dict]:
+        return self.service.listar_supervisores_ativos()

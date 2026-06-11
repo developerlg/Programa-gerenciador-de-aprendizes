@@ -23,6 +23,7 @@ from views.tela_consulta import TelaConsulta
 from views.tela_dashboard import DashboardView
 from views.tela_historico import TelaHistorico
 from views.tela_relatorios import TelaRelatorios
+from views.tela_supervisores import CadastroSupervisoresView
 
 
 class MainWindow(QMainWindow):
@@ -66,6 +67,7 @@ class MainWindow(QMainWindow):
         self.stack.addWidget(TelaHistorico())
         self.stack.addWidget(TelaAvaliacao())
         self.stack.addWidget(TelaRelatorios())
+        self.stack.addWidget(CadastroSupervisoresView())
         self.stack.addWidget(TelaConfiguracoes())
         body.addWidget(self.stack, 1)
 
@@ -126,7 +128,7 @@ class MainWindow(QMainWindow):
 
         layout = QVBoxLayout(sidebar)
         layout.setContentsMargins(14, 20, 14, 16)
-        layout.setSpacing(8)
+        layout.setSpacing(6)
 
         menu_items = [
             ("Tela Inicial", QStyle.StandardPixmap.SP_DirHomeIcon),
@@ -136,6 +138,7 @@ class MainWindow(QMainWindow):
             ("Historico do\nAprendiz", QStyle.StandardPixmap.SP_FileIcon),
             ("Avaliacao de\nDesempenho", QStyle.StandardPixmap.SP_ComputerIcon),
             ("Relatorios", QStyle.StandardPixmap.SP_FileLinkIcon),
+            ("Supervisores", QStyle.StandardPixmap.SP_DialogApplyButton),
             ("Configuracoes", QStyle.StandardPixmap.SP_FileDialogInfoView),
         ]
 
@@ -144,7 +147,7 @@ class MainWindow(QMainWindow):
             button.setObjectName("menuButton")
             button.setIcon(self.style().standardIcon(icon_type))
             button.setCursor(Qt.CursorShape.PointingHandCursor)
-            button.setMinimumHeight(50)
+            button.setMinimumHeight(54)
             button.clicked.connect(lambda checked=False, page=index: self._set_page(page))
             self.menu_buttons.append(button)
             layout.addWidget(button)

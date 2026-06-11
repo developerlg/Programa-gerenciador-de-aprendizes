@@ -58,9 +58,9 @@ QPushButton#menuButton {{
     border: none;
     border-radius: 8px;
     color: #FFFFFF;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 600;
-    padding: 12px 14px;
+    padding: 8px 14px;
     text-align: left;
 }}
 
