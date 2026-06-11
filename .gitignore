@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.zip
+.venv/
+venv/
+sistema_aprendizes_v1_codigo/
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
