@@ -183,9 +183,10 @@ class CadastroAprendizesView(QWidget):
         atual = self.supervisor_combo.currentData()
         self.supervisor_combo.clear()
         self.supervisor_combo.addItem("Selecione o supervisor", "")
-        for supervisor in self.controller.listar_supervisores_ativos():
-            texto = f"{supervisor['nome']} - {supervisor['funcao']}"
-            self.supervisor_combo.addItem(texto, supervisor["id"])
+        supervisores = self.controller.listar_supervisores_ativos()
+
+        for supervisor in supervisores:
+            self.supervisor_combo.addItem(supervisor["nome"], supervisor["id"])
 
         if atual:
             index = self.supervisor_combo.findData(atual)
@@ -315,6 +316,9 @@ class CadastroAprendizesView(QWidget):
     def _atualizar_tela(self):
         self._carregar_supervisores()
         self._carregar_tabela()
+
+    def ao_exibir(self):
+        self._atualizar_tela()
 
     def _limpar_formulario(self):
         self.aprendiz_em_edicao = None

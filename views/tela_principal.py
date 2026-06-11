@@ -233,6 +233,11 @@ class MainWindow(QMainWindow):
             button.style().unpolish(button)
             button.style().polish(button)
 
+        tela_atual = self.stack.currentWidget()
+        atualizar_tela = getattr(tela_atual, "ao_exibir", None)
+        if callable(atualizar_tela):
+            atualizar_tela()
+
     def _toggle_maximized(self):
         if self.isMaximized():
             self.showNormal()

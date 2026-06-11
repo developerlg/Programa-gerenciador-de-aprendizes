@@ -6,7 +6,7 @@ DATA_DIR = BASE_DIR / "data"
 DATABASE_PATH = DATA_DIR / "aprendizes.db"
 
 APP_TITLE = "Sistema de Acompanhamento de Jovens Aprendizes"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.1.2"
 
 CURRENT_USER_NAME = "Luis Gustavo"
 CURRENT_USER_ROLE = "Supervisor"

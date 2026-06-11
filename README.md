@@ -2,12 +2,13 @@
 
 Aplicacao desktop para acompanhamento interno de jovens aprendizes.
 
-## Escopo da V1.1
+## Escopo da V1.1.2
 
 - Janela principal com menu lateral fixo.
 - Dashboard limpo com contadores reais do banco e areas de atividades ainda vazias.
 - Cadastro de supervisores com nome, funcao e status.
 - Cadastro de aprendizes com nome, CPF, setor, observacao e supervisor.
+- Atualizacao automatica da lista de supervisores no cadastro de aprendizes.
 - Estrutura inicial da tabela de atividades no SQLite.
 - Exclusao logica por inativacao.
 - Telas futuras como placeholders com a mensagem `Tela em desenvolvimento`.
