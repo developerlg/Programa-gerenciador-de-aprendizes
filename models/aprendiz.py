@@ -8,12 +8,10 @@ class Aprendiz:
     cpf: str
     setor: str
     observacao: str
-    supervisor_id: int
     data_cadastro: str
     id: int | None = None
     ativo: bool = True
     data_atualizacao: str = ""
-    supervisor_nome: str = ""
 
     @classmethod
     def from_row(cls, row: Mapping[str, Any]) -> "Aprendiz":
@@ -23,8 +21,6 @@ class Aprendiz:
             cpf=row["cpf"],
             setor=row["setor"] or "",
             observacao=row["observacao"] or "",
-            supervisor_id=row["supervisor_id"],
-            supervisor_nome=row["supervisor_nome"] if "supervisor_nome" in row.keys() else "",
             ativo=bool(row["ativo"]),
             data_cadastro=row["data_cadastro"],
             data_atualizacao=row["data_atualizacao"] or "",

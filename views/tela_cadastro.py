@@ -29,7 +29,6 @@ class CadastroAprendizesView(QWidget):
         self.controller = controller or AprendizController()
         self.aprendiz_em_edicao: int | None = None
         self._build_ui()
-        self._carregar_supervisores()
         self._carregar_tabela()
 
     def _build_ui(self):
@@ -54,7 +53,7 @@ class CadastroAprendizesView(QWidget):
         title_box = QVBoxLayout()
         title = QLabel("Cadastro de Aprendizes")
         title.setObjectName("pageTitle")
-        subtitle = QLabel("Cadastre os jovens e vincule cada um ao supervisor responsavel.")
+        subtitle = QLabel("Cadastre e gerencie os jovens do programa.")
         subtitle.setObjectName("mutedText")
         title_box.addWidget(title)
         title_box.addWidget(subtitle)
@@ -86,8 +85,6 @@ class CadastroAprendizesView(QWidget):
         self.setor_combo.addItem("Selecione o setor", "")
         self.setor_combo.addItems(SETORES_APRENDIZES)
 
-        self.supervisor_combo = QComboBox()
-
         self.status_combo = QComboBox()
         self.status_combo.addItems(["Ativo", "Inativo"])
 
@@ -102,9 +99,8 @@ class CadastroAprendizesView(QWidget):
         self._add_labeled_widget(grid, 0, 0, "Nome *", self.nome_input)
         self._add_labeled_widget(grid, 0, 1, "CPF *", self.cpf_input)
         self._add_labeled_widget(grid, 1, 0, "Setor *", self.setor_combo)
-        self._add_labeled_widget(grid, 1, 1, "Supervisor *", self.supervisor_combo)
-        self._add_labeled_widget(grid, 2, 0, "Status", self.status_combo)
-        self._add_labeled_widget(grid, 2, 1, "Observação", self.observacao_input)
+        self._add_labeled_widget(grid, 1, 1, "Status", self.status_combo)
+        self._add_labeled_widget(grid, 2, 0, "Observação", self.observacao_input)
 
         panel.layout.addLayout(grid)
 
@@ -133,7 +129,7 @@ class CadastroAprendizesView(QWidget):
         title = QLabel("Aprendizes cadastrados")
         title.setObjectName("sectionTitle")
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Buscar por nome, CPF, setor ou supervisor...")
+        self.search_input.setPlaceholderText("Buscar por nome, CPF ou setor...")
         self.search_input.setFixedWidth(340)
         self.search_input.textChanged.connect(self._carregar_tabela)
 
@@ -148,9 +144,9 @@ class CadastroAprendizesView(QWidget):
         header.addWidget(refresh_button)
         panel.layout.addLayout(header)
 
-        self.table = QTableWidget(0, 7)
+        self.table = QTableWidget(0, 6)
         self.table.setHorizontalHeaderLabels(
-            ["ID", "Nome", "CPF", "Setor", "Supervisor", "Status", "Ações"]
+            ["ID", "Nome", "CPF", "Setor", "Status", "Ações"]
         )
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -165,7 +161,6 @@ class CadastroAprendizesView(QWidget):
         header_view.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
         header_view.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
         header_view.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
-        header_view.setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
 
         panel.layout.addWidget(self.table)
 
@@ -182,20 +177,6 @@ class CadastroAprendizesView(QWidget):
         box.addWidget(widget)
         grid.addLayout(box, row, column)
 
-    def _carregar_supervisores(self):
-        atual = self.supervisor_combo.currentData()
-        self.supervisor_combo.clear()
-        self.supervisor_combo.addItem("Selecione o supervisor", "")
-        supervisores = self.controller.listar_supervisores_ativos()
-
-        for supervisor in supervisores:
-            self.supervisor_combo.addItem(supervisor["nome"], supervisor["id"])
-
-        if atual:
-            index = self.supervisor_combo.findData(atual)
-            if index >= 0:
-                self.supervisor_combo.setCurrentIndex(index)
-
     def _carregar_tabela(self, *_):
         termo = self.search_input.text() if hasattr(self, "search_input") else ""
         aprendizes = self.controller.listar_aprendizes(termo)
@@ -206,9 +187,8 @@ class CadastroAprendizesView(QWidget):
             self._set_text(row_index, 1, aprendiz["nome"])
             self._set_text(row_index, 2, aprendiz["cpf"], center=True)
             self._set_text(row_index, 3, aprendiz["setor"])
-            self._set_text(row_index, 4, aprendiz["supervisor_nome"])
-            self.table.setCellWidget(row_index, 5, StatusBadge(aprendiz["status"]))
-            self.table.setCellWidget(row_index, 6, self._action_buttons(aprendiz))
+            self.table.setCellWidget(row_index, 4, StatusBadge(aprendiz["status"]))
+            self.table.setCellWidget(row_index, 5, self._action_buttons(aprendiz))
 
         self.counter_label.setText(f"Mostrando {len(aprendizes)} registro(s)")
 
@@ -249,7 +229,6 @@ class CadastroAprendizesView(QWidget):
             "cpf": self.cpf_input.text(),
             "setor": self.setor_combo.currentData() or self.setor_combo.currentText(),
             "observacao": self.observacao_input.toPlainText(),
-            "supervisor_id": self.supervisor_combo.currentData(),
             "ativo": self.status_combo.currentText() == "Ativo",
         }
 
@@ -281,13 +260,8 @@ class CadastroAprendizesView(QWidget):
         self.cpf_input.setText(aprendiz["cpf"])
         self._selecionar_combo_por_texto(self.setor_combo, aprendiz["setor"])
         self.observacao_input.setPlainText(aprendiz["observacao"])
-        self._selecionar_supervisor(aprendiz["supervisor_id"])
         self.status_combo.setCurrentText(aprendiz["status"])
         self.save_button.setText("Salvar alterações")
-
-    def _selecionar_supervisor(self, supervisor_id: int):
-        index = self.supervisor_combo.findData(supervisor_id)
-        self.supervisor_combo.setCurrentIndex(index if index >= 0 else 0)
 
     def _selecionar_combo_por_texto(self, combo: QComboBox, texto: str):
         index = combo.findText(texto)
@@ -324,7 +298,6 @@ class CadastroAprendizesView(QWidget):
         self._carregar_tabela()
 
     def _atualizar_tela(self):
-        self._carregar_supervisores()
         self._carregar_tabela()
 
     def ao_exibir(self):
@@ -336,7 +309,6 @@ class CadastroAprendizesView(QWidget):
         self.cpf_input.clear()
         self.setor_combo.setCurrentIndex(0)
         self.observacao_input.clear()
-        self.supervisor_combo.setCurrentIndex(0)
         self.status_combo.setCurrentText("Ativo")
         self.save_button.setText("Salvar")
         self.nome_input.setFocus()

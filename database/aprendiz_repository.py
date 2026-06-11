@@ -14,19 +14,17 @@ class AprendizRepository:
                     cpf,
                     setor,
                     observacao,
-                    supervisor_id,
                     ativo,
                     data_cadastro,
                     data_atualizacao
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     aprendiz.nome,
                     aprendiz.cpf,
                     aprendiz.setor,
                     aprendiz.observacao,
-                    aprendiz.supervisor_id,
                     int(aprendiz.ativo),
                     aprendiz.data_cadastro,
                     aprendiz.data_atualizacao,
@@ -43,7 +41,6 @@ class AprendizRepository:
                        cpf = ?,
                        setor = ?,
                        observacao = ?,
-                       supervisor_id = ?,
                        ativo = ?,
                        data_atualizacao = ?
                  WHERE id = ?
@@ -53,7 +50,6 @@ class AprendizRepository:
                     aprendiz.cpf,
                     aprendiz.setor,
                     aprendiz.observacao,
-                    aprendiz.supervisor_id,
                     int(aprendiz.ativo),
                     aprendiz.data_atualizacao,
                     aprendiz.id,
@@ -67,23 +63,20 @@ class AprendizRepository:
 
         if termo:
             like = f"%{termo}%"
-            parametros = (like, like, like, like)
+            parametros = (like, like, like)
             filtro = """
-                WHERE a.nome LIKE ?
-                   OR a.cpf LIKE ?
-                   OR a.setor LIKE ?
-                   OR s.nome LIKE ?
+                WHERE nome LIKE ?
+                   OR cpf LIKE ?
+                   OR setor LIKE ?
             """
 
         with obter_conexao() as conexao:
             linhas = conexao.execute(
                 f"""
-                SELECT a.*,
-                       COALESCE(s.nome, '') AS supervisor_nome
-                  FROM aprendizes a
-             LEFT JOIN supervisores s ON s.id = a.supervisor_id
+                SELECT *
+                  FROM aprendizes
                 {filtro}
-                 ORDER BY a.id DESC
+                 ORDER BY id DESC
                 """,
                 parametros,
             ).fetchall()
@@ -93,11 +86,9 @@ class AprendizRepository:
         with obter_conexao() as conexao:
             linha = conexao.execute(
                 """
-                SELECT a.*,
-                       COALESCE(s.nome, '') AS supervisor_nome
-                  FROM aprendizes a
-             LEFT JOIN supervisores s ON s.id = a.supervisor_id
-                 WHERE a.id = ?
+                SELECT *
+                  FROM aprendizes
+                 WHERE id = ?
                 """,
                 (aprendiz_id,),
             ).fetchone()

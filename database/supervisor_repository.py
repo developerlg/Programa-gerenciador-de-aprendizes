@@ -120,19 +120,6 @@ class SupervisorRepository:
             ).fetchone()
             return linha is not None
 
-    def possui_aprendizes_vinculados(self, supervisor_id: int) -> bool:
-        with obter_conexao() as conexao:
-            linha = conexao.execute(
-                """
-                SELECT 1
-                  FROM aprendizes
-                 WHERE supervisor_id = ?
-                 LIMIT 1
-                """,
-                (supervisor_id,),
-            ).fetchone()
-            return linha is not None
-
     def contar_ativos(self) -> int:
         with obter_conexao() as conexao:
             linha = conexao.execute(
