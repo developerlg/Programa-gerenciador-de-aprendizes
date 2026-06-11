@@ -2,7 +2,7 @@
 
 Aplicação desktop para acompanhamento interno de jovens aprendizes.
 
-## Escopo da V1.1.3
+## Escopo da V1.2
 
 - Janela principal com menu lateral fixo.
 - Dashboard limpo com contadores reais do banco e áreas de atividades ainda vazias.
@@ -11,6 +11,7 @@ Aplicação desktop para acompanhamento interno de jovens aprendizes.
 - Campo CPF com máscara automática no formato `000.000.000-00`.
 - Campos de setor e função padronizados por menus suspensos.
 - Atualização automática da lista de supervisores no cadastro de aprendizes.
+- Correção do gráfico “Atividades por situação” para exibir total 0 quando não houver atividades.
 - Estrutura inicial da tabela de atividades no SQLite.
 - Exclusão lógica por inativação.
 - Telas futuras como placeholders com a mensagem `Tela em desenvolvimento`.

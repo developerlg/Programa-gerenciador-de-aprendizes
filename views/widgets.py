@@ -119,7 +119,8 @@ class DonutChartWidget(QWidget):
 
     def paintEvent(self, event):
         super().paintEvent(event)
-        total = sum(item[1] for item in self.items) or 1
+        total = sum(item[1] for item in self.items)
+        divisor = total if total > 0 else 1
         painter = QPainter(self)
         painter.setRenderHint(QPainter.RenderHint.Antialiasing)
 
@@ -132,13 +133,19 @@ class DonutChartWidget(QWidget):
         )
 
         start_angle = 90 * 16
-        for _, value, color in self.items:
-            span_angle = int(-(value / total) * 360 * 16)
-            pen = QPen(QColor(color), 26)
+        if total == 0:
+            pen = QPen(QColor("#D7DEE8"), 26)
             pen.setCapStyle(Qt.PenCapStyle.FlatCap)
             painter.setPen(pen)
-            painter.drawArc(rect, start_angle, span_angle)
-            start_angle += span_angle
+            painter.drawArc(rect, 0, 360 * 16)
+        else:
+            for _, value, color in self.items:
+                span_angle = int(-(value / divisor) * 360 * 16)
+                pen = QPen(QColor(color), 26)
+                pen.setCapStyle(Qt.PenCapStyle.FlatCap)
+                painter.setPen(pen)
+                painter.drawArc(rect, start_angle, span_angle)
+                start_angle += span_angle
 
         painter.setPen(QColor("#0F172A"))
         font = QFont("Segoe UI", 19, QFont.Weight.Bold)
