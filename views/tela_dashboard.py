@@ -90,11 +90,11 @@ class DashboardView(QWidget):
         page_layout.addWidget(sidebar_box)
 
     def _recent_activities_panel(self) -> Panel:
-        panel = Panel("Ultimas atividades registradas")
+        panel = Panel("Últimas atividades registradas")
         activities = self.dados["recent_activities"]
         table = QTableWidget(len(activities), 6)
         table.setHorizontalHeaderLabels(
-            ["Data", "Aprendiz", "Atividade", "Tipo de servico", "Situacao", "Prazo"]
+            ["Data", "Aprendiz", "Atividade", "Tipo de serviço", "Situação", "Prazo"]
         )
         table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -129,7 +129,7 @@ class DashboardView(QWidget):
         return panel
 
     def _status_chart_panel(self) -> Panel:
-        panel = Panel("Atividades por situacao")
+        panel = Panel("Atividades por situação")
         row = QHBoxLayout()
         row.setSpacing(18)
         chart_data = self.dados["status_chart"]
@@ -150,7 +150,7 @@ class DashboardView(QWidget):
         return panel
 
     def _service_chart_panel(self) -> Panel:
-        panel = Panel("Atividades por tipo de servico")
+        panel = Panel("Atividades por tipo de serviço")
         if self.dados["service_chart"]:
             panel.layout.addWidget(BarChartWidget(self.dados["service_chart"]))
         else:
@@ -161,7 +161,7 @@ class DashboardView(QWidget):
         return panel
 
     def _pending_panel(self) -> Panel:
-        panel = Panel("Pendencias")
+        panel = Panel("Pendências")
         for label, value, color in self.dados["pending"]:
             row = QHBoxLayout()
             row.addWidget(QLabel(label))
@@ -173,7 +173,7 @@ class DashboardView(QWidget):
         return panel
 
     def _deadlines_panel(self) -> Panel:
-        panel = Panel("Proximos prazos")
+        panel = Panel("Próximos prazos")
         deadlines = self.dados["deadlines"]
         for name, activity, deadline, urgent in deadlines:
             item = QFrame()

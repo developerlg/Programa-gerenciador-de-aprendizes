@@ -12,14 +12,16 @@ class SupervisorRepository:
                 INSERT INTO supervisores (
                     nome,
                     funcao,
+                    setor,
                     ativo,
                     data_atualizacao
                 )
-                VALUES (?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?)
                 """,
                 (
                     supervisor.nome,
                     supervisor.funcao,
+                    supervisor.setor,
                     int(supervisor.ativo),
                     supervisor.data_atualizacao,
                 ),
@@ -33,6 +35,7 @@ class SupervisorRepository:
                 UPDATE supervisores
                    SET nome = ?,
                        funcao = ?,
+                       setor = ?,
                        ativo = ?,
                        data_atualizacao = ?
                  WHERE id = ?
@@ -40,6 +43,7 @@ class SupervisorRepository:
                 (
                     supervisor.nome,
                     supervisor.funcao,
+                    supervisor.setor,
                     int(supervisor.ativo),
                     supervisor.data_atualizacao,
                     supervisor.id,
@@ -53,10 +57,11 @@ class SupervisorRepository:
 
         if termo:
             like = f"%{termo}%"
-            parametros = (like, like)
+            parametros = (like, like, like)
             filtro = """
                 WHERE nome LIKE ?
                    OR funcao LIKE ?
+                   OR setor LIKE ?
             """
 
         with obter_conexao() as conexao:

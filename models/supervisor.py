@@ -6,6 +6,7 @@ from typing import Any, Mapping
 class Supervisor:
     nome: str
     funcao: str
+    setor: str
     id: int | None = None
     ativo: bool = True
     criado_em: str = ""
@@ -17,6 +18,7 @@ class Supervisor:
             id=row["id"],
             nome=row["nome"],
             funcao=row["funcao"] or "",
+            setor=row["setor"] or "",
             ativo=bool(row["ativo"]),
             criado_em=row["criado_em"],
             data_atualizacao=row["data_atualizacao"] or "",

@@ -1,19 +1,21 @@
 # Sistema de Acompanhamento de Jovens Aprendizes
 
-Aplicacao desktop para acompanhamento interno de jovens aprendizes.
+Aplicação desktop para acompanhamento interno de jovens aprendizes.
 
-## Escopo da V1.1.2
+## Escopo da V1.1.3
 
 - Janela principal com menu lateral fixo.
-- Dashboard limpo com contadores reais do banco e areas de atividades ainda vazias.
-- Cadastro de supervisores com nome, funcao e status.
-- Cadastro de aprendizes com nome, CPF, setor, observacao e supervisor.
-- Atualizacao automatica da lista de supervisores no cadastro de aprendizes.
+- Dashboard limpo com contadores reais do banco e áreas de atividades ainda vazias.
+- Cadastro de supervisores com nome, função, setor e status.
+- Cadastro de aprendizes com nome, CPF, setor, observação e supervisor.
+- Campo CPF com máscara automática no formato `000.000.000-00`.
+- Campos de setor e função padronizados por menus suspensos.
+- Atualização automática da lista de supervisores no cadastro de aprendizes.
 - Estrutura inicial da tabela de atividades no SQLite.
-- Exclusao logica por inativacao.
+- Exclusão lógica por inativação.
 - Telas futuras como placeholders com a mensagem `Tela em desenvolvimento`.
 
-Nao ha login, relatorios reais, historico, avaliacoes ou registro funcional de atividades nesta versao.
+Não há login, relatórios reais, histórico, avaliações ou registro funcional de atividades nesta versão.
 
 ## Como rodar
 
@@ -25,7 +27,7 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-3. Instale as dependencias:
+3. Instale as dependências:
 
 ```powershell
 python -m pip install -r requirements.txt
@@ -37,20 +39,21 @@ python -m pip install -r requirements.txt
 python main.py
 ```
 
-Tambem e possivel abrir pelo arquivo:
+Também é possível abrir pelo arquivo:
 
 ```powershell
 .\Abrir Sistema.bat
 ```
 
-O banco SQLite sera criado automaticamente em `data/aprendizes.db` na primeira execucao.
+O banco SQLite será criado automaticamente em `data/aprendizes.db` na primeira execução.
 
 ## Estrutura
 
-- `main.py`: ponto de entrada da aplicacao.
-- `database/`: conexao, migracao/criacao de tabelas e consultas SQL.
+- `main.py`: ponto de entrada da aplicação.
+- `database/`: conexão, migração/criação de tabelas e consultas SQL.
 - `models/`: modelos de dados.
-- `services/`: regras de validacao e fluxo de negocio.
-- `controllers/`: ponte entre interface e servicos.
+- `services/`: regras de validação e fluxo de negócio.
+- `controllers/`: ponte entre interface e serviços.
 - `views/`: telas e componentes visuais.
-- `backups/` e `reports/`: pastas reservadas para versoes futuras.
+- `data/opcoes.py`: listas padronizadas de setores e funções.
+- `backups/` e `reports/`: pastas reservadas para versões futuras.

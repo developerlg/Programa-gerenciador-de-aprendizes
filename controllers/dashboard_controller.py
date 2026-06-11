@@ -37,7 +37,7 @@ class DashboardController:
             "recent_activities": [],
             "status_chart": [
                 ("Em andamento", 0, "#2F80ED"),
-                ("Concluidas", 0, "#27AE60"),
+                ("Concluídas", 0, "#27AE60"),
                 ("Atrasadas", 0, "#EB5757"),
             ],
             "service_chart": [],

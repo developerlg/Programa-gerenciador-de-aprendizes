@@ -18,6 +18,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.aprendiz_controller import AprendizController
+from data.opcoes import SETORES_APRENDIZES
 from services.aprendiz_service import ValidationError
 from views.widgets import Panel, StatusBadge
 
@@ -79,9 +80,11 @@ class CadastroAprendizesView(QWidget):
 
         self.cpf_input = QLineEdit()
         self.cpf_input.setPlaceholderText("000.000.000-00")
+        self.cpf_input.setInputMask("000.000.000-00;_")
 
-        self.setor_input = QLineEdit()
-        self.setor_input.setPlaceholderText("Digite o setor")
+        self.setor_combo = QComboBox()
+        self.setor_combo.addItem("Selecione o setor", "")
+        self.setor_combo.addItems(SETORES_APRENDIZES)
 
         self.supervisor_combo = QComboBox()
 
@@ -89,7 +92,7 @@ class CadastroAprendizesView(QWidget):
         self.status_combo.addItems(["Ativo", "Inativo"])
 
         self.observacao_input = QTextEdit()
-        self.observacao_input.setPlaceholderText("Observacao opcional")
+        self.observacao_input.setPlaceholderText("Observação opcional")
         self.observacao_input.setFixedHeight(88)
 
         grid = QGridLayout()
@@ -98,10 +101,10 @@ class CadastroAprendizesView(QWidget):
 
         self._add_labeled_widget(grid, 0, 0, "Nome *", self.nome_input)
         self._add_labeled_widget(grid, 0, 1, "CPF *", self.cpf_input)
-        self._add_labeled_widget(grid, 1, 0, "Setor *", self.setor_input)
+        self._add_labeled_widget(grid, 1, 0, "Setor *", self.setor_combo)
         self._add_labeled_widget(grid, 1, 1, "Supervisor *", self.supervisor_combo)
         self._add_labeled_widget(grid, 2, 0, "Status", self.status_combo)
-        self._add_labeled_widget(grid, 2, 1, "Observacao", self.observacao_input)
+        self._add_labeled_widget(grid, 2, 1, "Observação", self.observacao_input)
 
         panel.layout.addLayout(grid)
 
@@ -147,7 +150,7 @@ class CadastroAprendizesView(QWidget):
 
         self.table = QTableWidget(0, 7)
         self.table.setHorizontalHeaderLabels(
-            ["ID", "Nome", "CPF", "Setor", "Supervisor", "Status", "Acoes"]
+            ["ID", "Nome", "CPF", "Setor", "Supervisor", "Status", "Ações"]
         )
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -244,7 +247,7 @@ class CadastroAprendizesView(QWidget):
         return {
             "nome": self.nome_input.text(),
             "cpf": self.cpf_input.text(),
-            "setor": self.setor_input.text(),
+            "setor": self.setor_combo.currentData() or self.setor_combo.currentText(),
             "observacao": self.observacao_input.toPlainText(),
             "supervisor_id": self.supervisor_combo.currentData(),
             "ativo": self.status_combo.currentText() == "Ativo",
@@ -270,21 +273,28 @@ class CadastroAprendizesView(QWidget):
     def _carregar_para_edicao(self, aprendiz_id: int):
         aprendiz = self.controller.obter_aprendiz(aprendiz_id)
         if not aprendiz:
-            QMessageBox.warning(self, "Nao encontrado", "Aprendiz nao encontrado.")
+            QMessageBox.warning(self, "Não encontrado", "Aprendiz não encontrado.")
             return
 
         self.aprendiz_em_edicao = aprendiz_id
         self.nome_input.setText(aprendiz["nome"])
         self.cpf_input.setText(aprendiz["cpf"])
-        self.setor_input.setText(aprendiz["setor"])
+        self._selecionar_combo_por_texto(self.setor_combo, aprendiz["setor"])
         self.observacao_input.setPlainText(aprendiz["observacao"])
         self._selecionar_supervisor(aprendiz["supervisor_id"])
         self.status_combo.setCurrentText(aprendiz["status"])
-        self.save_button.setText("Salvar alteracoes")
+        self.save_button.setText("Salvar alterações")
 
     def _selecionar_supervisor(self, supervisor_id: int):
         index = self.supervisor_combo.findData(supervisor_id)
         self.supervisor_combo.setCurrentIndex(index if index >= 0 else 0)
+
+    def _selecionar_combo_por_texto(self, combo: QComboBox, texto: str):
+        index = combo.findText(texto)
+        if index == -1 and texto:
+            combo.addItem(texto, texto)
+            index = combo.findText(texto)
+        combo.setCurrentIndex(index if index >= 0 else 0)
 
     def _editar_linha_selecionada(self):
         row = self.table.currentRow()
@@ -324,7 +334,7 @@ class CadastroAprendizesView(QWidget):
         self.aprendiz_em_edicao = None
         self.nome_input.clear()
         self.cpf_input.clear()
-        self.setor_input.clear()
+        self.setor_combo.setCurrentIndex(0)
         self.observacao_input.clear()
         self.supervisor_combo.setCurrentIndex(0)
         self.status_combo.setCurrentText("Ativo")

@@ -28,6 +28,7 @@ def _preparar_supervisores(conexao):
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL UNIQUE,
                 funcao TEXT NOT NULL DEFAULT '',
+                setor TEXT NOT NULL DEFAULT '',
                 ativo INTEGER NOT NULL DEFAULT 1,
                 criado_em TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 data_atualizacao TEXT
@@ -39,6 +40,8 @@ def _preparar_supervisores(conexao):
     colunas = _colunas(conexao, "supervisores")
     if "funcao" not in colunas:
         conexao.execute("ALTER TABLE supervisores ADD COLUMN funcao TEXT NOT NULL DEFAULT ''")
+    if "setor" not in colunas:
+        conexao.execute("ALTER TABLE supervisores ADD COLUMN setor TEXT NOT NULL DEFAULT ''")
     if "data_atualizacao" not in colunas:
         conexao.execute("ALTER TABLE supervisores ADD COLUMN data_atualizacao TEXT")
 

@@ -26,7 +26,7 @@ class AprendizService:
     def atualizar(self, aprendiz_id: int, dados: dict) -> None:
         existente = self.aprendiz_repository.obter_por_id(aprendiz_id)
         if not existente:
-            raise ValidationError("Aprendiz nao encontrado.")
+            raise ValidationError("Aprendiz não encontrado.")
 
         aprendiz = self._montar_aprendiz(
             dados,
@@ -46,7 +46,7 @@ class AprendizService:
 
     def inativar(self, aprendiz_id: int) -> None:
         if not self.aprendiz_repository.obter_por_id(aprendiz_id):
-            raise ValidationError("Aprendiz nao encontrado.")
+            raise ValidationError("Aprendiz não encontrado.")
         self.aprendiz_repository.atualizar_ativo(aprendiz_id, False)
 
     def listar_supervisores_ativos(self) -> list[dict]:
@@ -103,12 +103,12 @@ class AprendizService:
 
     def _validar_cpf_unico(self, cpf: str, ignorar_id: int | None = None) -> None:
         if self.aprendiz_repository.cpf_existe(cpf, ignorar_id):
-            raise ValidationError("Ja existe aprendiz cadastrado com este CPF.")
+            raise ValidationError("Já existe aprendiz cadastrado com este CPF.")
 
     def _texto_obrigatorio(self, valor, campo: str) -> str:
         texto = str(valor or "").strip()
         if not texto:
-            raise ValidationError(f"{campo} e obrigatorio.")
+            raise ValidationError(f"{campo} é obrigatório.")
         return texto
 
     def _texto_opcional(self, valor) -> str:
@@ -118,16 +118,16 @@ class AprendizService:
         try:
             inteiro = int(valor)
         except (TypeError, ValueError):
-            raise ValidationError(f"{campo} e obrigatorio.") from None
+            raise ValidationError(f"{campo} é obrigatório.") from None
 
         if inteiro <= 0:
-            raise ValidationError(f"{campo} e obrigatorio.")
+            raise ValidationError(f"{campo} é obrigatório.")
         return inteiro
 
     def _normalizar_cpf(self, valor) -> str:
         cpf = "".join(ch for ch in str(valor or "") if ch.isdigit())
         if len(cpf) != 11:
-            raise ValidationError("CPF deve conter 11 digitos.")
+            raise ValidationError("CPF deve conter 11 dígitos.")
         return cpf
 
     def _formatar_cpf(self, cpf: str) -> str:

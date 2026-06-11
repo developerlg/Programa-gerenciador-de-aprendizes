@@ -135,11 +135,11 @@ class MainWindow(QMainWindow):
             ("Cadastro de\nAprendizes", QStyle.StandardPixmap.SP_FileDialogNewFolder),
             ("Registro de\nAtividade", QStyle.StandardPixmap.SP_FileDialogDetailedView),
             ("Consulta de\nAndamento", QStyle.StandardPixmap.SP_FileDialogContentsView),
-            ("Historico do\nAprendiz", QStyle.StandardPixmap.SP_FileIcon),
-            ("Avaliacao de\nDesempenho", QStyle.StandardPixmap.SP_ComputerIcon),
-            ("Relatorios", QStyle.StandardPixmap.SP_FileLinkIcon),
+            ("Histórico do\nAprendiz", QStyle.StandardPixmap.SP_FileIcon),
+            ("Avaliação de\nDesempenho", QStyle.StandardPixmap.SP_ComputerIcon),
+            ("Relatórios", QStyle.StandardPixmap.SP_FileLinkIcon),
             ("Supervisores", QStyle.StandardPixmap.SP_DialogApplyButton),
-            ("Configuracoes", QStyle.StandardPixmap.SP_FileDialogInfoView),
+            ("Configurações", QStyle.StandardPixmap.SP_FileDialogInfoView),
         ]
 
         for index, (label, icon_type) in enumerate(menu_items):
@@ -190,7 +190,7 @@ class MainWindow(QMainWindow):
         layout = QHBoxLayout(footer)
         layout.setContentsMargins(24, 0, 24, 0)
 
-        left = QLabel(f"{APP_TITLE}   |   Versao {APP_VERSION}")
+        left = QLabel(f"{APP_TITLE}   |   Versão {APP_VERSION}")
         left.setObjectName("mutedText")
         right = QLabel("© 2026 - Todos os direitos reservados")
         right.setObjectName("mutedText")

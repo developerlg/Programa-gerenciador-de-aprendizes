@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (
 )
 
 from controllers.supervisor_controller import SupervisorController
+from data.opcoes import FUNCOES_SUPERVISORES, SETORES_SUPERVISORES
 from services.aprendiz_service import ValidationError
 from views.widgets import Panel, StatusBadge
 
@@ -75,8 +76,13 @@ class CadastroSupervisoresView(QWidget):
         self.nome_input = QLineEdit()
         self.nome_input.setPlaceholderText("Digite o nome do servidor")
 
-        self.funcao_input = QLineEdit()
-        self.funcao_input.setPlaceholderText("Digite a funcao")
+        self.funcao_combo = QComboBox()
+        self.funcao_combo.addItem("Selecione a função", "")
+        self.funcao_combo.addItems(FUNCOES_SUPERVISORES)
+
+        self.setor_combo = QComboBox()
+        self.setor_combo.addItem("Selecione o setor", "")
+        self.setor_combo.addItems(SETORES_SUPERVISORES)
 
         self.status_combo = QComboBox()
         self.status_combo.addItems(["Ativo", "Inativo"])
@@ -85,8 +91,9 @@ class CadastroSupervisoresView(QWidget):
         grid.setHorizontalSpacing(28)
         grid.setVerticalSpacing(12)
         self._add_labeled_widget(grid, 0, 0, "Nome *", self.nome_input)
-        self._add_labeled_widget(grid, 0, 1, "Funcao *", self.funcao_input)
-        self._add_labeled_widget(grid, 1, 0, "Status", self.status_combo)
+        self._add_labeled_widget(grid, 0, 1, "Função *", self.funcao_combo)
+        self._add_labeled_widget(grid, 1, 0, "Setor *", self.setor_combo)
+        self._add_labeled_widget(grid, 1, 1, "Status", self.status_combo)
         panel.layout.addLayout(grid)
 
         actions = QHBoxLayout()
@@ -129,8 +136,8 @@ class CadastroSupervisoresView(QWidget):
         header.addWidget(refresh_button)
         panel.layout.addLayout(header)
 
-        self.table = QTableWidget(0, 5)
-        self.table.setHorizontalHeaderLabels(["ID", "Nome", "Funcao", "Status", "Acoes"])
+        self.table = QTableWidget(0, 6)
+        self.table.setHorizontalHeaderLabels(["ID", "Nome", "Função", "Setor", "Status", "Ações"])
         self.table.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.table.verticalHeader().setVisible(False)
@@ -141,8 +148,9 @@ class CadastroSupervisoresView(QWidget):
         header_view.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
         header_view.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header_view.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        header_view.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        header_view.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
         header_view.setSectionResizeMode(4, QHeaderView.ResizeMode.ResizeToContents)
+        header_view.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
 
         panel.layout.addWidget(self.table)
         self.counter_label = QLabel()
@@ -167,8 +175,9 @@ class CadastroSupervisoresView(QWidget):
             self._set_text(row_index, 0, str(supervisor["id"]), center=True)
             self._set_text(row_index, 1, supervisor["nome"])
             self._set_text(row_index, 2, supervisor["funcao"])
-            self.table.setCellWidget(row_index, 3, StatusBadge(supervisor["status"]))
-            self.table.setCellWidget(row_index, 4, self._action_buttons(supervisor))
+            self._set_text(row_index, 3, supervisor["setor"])
+            self.table.setCellWidget(row_index, 4, StatusBadge(supervisor["status"]))
+            self.table.setCellWidget(row_index, 5, self._action_buttons(supervisor))
 
         self.counter_label.setText(f"Mostrando {len(supervisores)} registro(s)")
 
@@ -206,7 +215,8 @@ class CadastroSupervisoresView(QWidget):
     def _coletar_dados(self) -> dict:
         return {
             "nome": self.nome_input.text(),
-            "funcao": self.funcao_input.text(),
+            "funcao": self.funcao_combo.currentData() or self.funcao_combo.currentText(),
+            "setor": self.setor_combo.currentData() or self.setor_combo.currentText(),
             "ativo": self.status_combo.currentText() == "Ativo",
         }
 
@@ -230,14 +240,22 @@ class CadastroSupervisoresView(QWidget):
     def _carregar_para_edicao(self, supervisor_id: int):
         supervisor = self.controller.obter_supervisor(supervisor_id)
         if not supervisor:
-            QMessageBox.warning(self, "Nao encontrado", "Supervisor nao encontrado.")
+            QMessageBox.warning(self, "Não encontrado", "Supervisor não encontrado.")
             return
 
         self.supervisor_em_edicao = supervisor_id
         self.nome_input.setText(supervisor["nome"])
-        self.funcao_input.setText(supervisor["funcao"])
+        self._selecionar_combo_por_texto(self.funcao_combo, supervisor["funcao"])
+        self._selecionar_combo_por_texto(self.setor_combo, supervisor["setor"])
         self.status_combo.setCurrentText(supervisor["status"])
-        self.save_button.setText("Salvar alteracoes")
+        self.save_button.setText("Salvar alterações")
+
+    def _selecionar_combo_por_texto(self, combo: QComboBox, texto: str):
+        index = combo.findText(texto)
+        if index == -1 and texto:
+            combo.addItem(texto, texto)
+            index = combo.findText(texto)
+        combo.setCurrentIndex(index if index >= 0 else 0)
 
     def _editar_linha_selecionada(self):
         row = self.table.currentRow()
@@ -269,7 +287,8 @@ class CadastroSupervisoresView(QWidget):
     def _limpar_formulario(self):
         self.supervisor_em_edicao = None
         self.nome_input.clear()
-        self.funcao_input.clear()
+        self.funcao_combo.setCurrentIndex(0)
+        self.setor_combo.setCurrentIndex(0)
         self.status_combo.setCurrentText("Ativo")
         self.save_button.setText("Salvar")
         self.nome_input.setFocus()
