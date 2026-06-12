@@ -65,8 +65,12 @@ class StatusBadge(QLabel):
         "Inativo": ("#E5E7EB", "#4B5563", "#D1D5DB"),
         "Em andamento": ("#EAF3FF", "#0057C2", "#8BBDF8"),
         "Concluido": ("#DCFCE7", "#15803D", "#86EFAC"),
+        "Concluida": ("#DCFCE7", "#15803D", "#86EFAC"),
+        "Concluída": ("#DCFCE7", "#15803D", "#86EFAC"),
         "Atrasado": ("#FEE2E2", "#DC2626", "#FCA5A5"),
+        "Atrasada": ("#FEE2E2", "#DC2626", "#FCA5A5"),
         "Pausado": ("#FFEDD5", "#C2410C", "#FDBA74"),
+        "Pausada": ("#FFEDD5", "#C2410C", "#FDBA74"),
     }
 
     def __init__(self, status: str, parent=None):

@@ -153,15 +153,20 @@ QFrame#sidebarInfo {{
     border-radius: 8px;
 }}
 
-QLineEdit, QComboBox, QTextEdit {{
+QLineEdit, QComboBox, QDateEdit, QTextEdit {{
     background: #FFFFFF;
     border: 1px solid #C8D4E3;
     border-radius: 7px;
     padding: 8px 10px;
 }}
 
-QLineEdit:focus, QComboBox:focus, QTextEdit:focus {{
+QLineEdit:focus, QComboBox:focus, QDateEdit:focus, QTextEdit:focus {{
     border: 1px solid {PRIMARY};
+}}
+
+QDateEdit::drop-down {{
+    border: none;
+    width: 22px;
 }}
 
 QTableWidget {{

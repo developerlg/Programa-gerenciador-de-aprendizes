@@ -19,3 +19,17 @@ FUNCOES_SUPERVISORES = (
     "Agente de ADM",
     "Gerente",
 )
+
+TIPOS_SERVICO_ATIVIDADE = (
+    "Arquivamento",
+    "Digitalização",
+    "Organização de documentos",
+    "Conferência",
+)
+
+SITUACOES_ATIVIDADE = (
+    "Em andamento",
+    "Concluída",
+    "Pausada",
+    "Atrasada",
+)

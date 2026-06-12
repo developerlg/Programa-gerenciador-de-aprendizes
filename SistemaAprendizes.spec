@@ -28,6 +28,8 @@ def add_tree(relative_dir: str) -> None:
     for source_path in source_dir.rglob("*"):
         if source_path.is_dir():
             continue
+        if " - Copia" in source_path.name:
+            continue
         if "__pycache__" in source_path.parts:
             continue
         if source_path.suffix in {".pyc", ".pyo"}:
