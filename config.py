@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 BASE_DIR = Path(__file__).resolve().parent
-APP_SLUG = "ProgramaAprendizes"
+APP_SLUG = "SistemaAprendizes"
 INITIAL_DATABASE_NAME = "aprendizes_inicial.db"
 RUNTIME_DATABASE_NAME = "aprendizes.db"
 

@@ -2,141 +2,134 @@
 
 Aplicação desktop para acompanhamento interno de jovens aprendizes no Windows.
 
-## Escopo da V1.3
+## Para Usuário Comum
 
-- Janela principal com menu lateral fixo.
-- Dashboard limpo com contadores reais do banco e áreas de atividades ainda vazias.
-- Cadastro de supervisores com nome, função, setor e status.
-- Cadastro de aprendizes com nome, CPF, setor, observação e status.
-- O cadastro de aprendizes não possui mais vínculo fixo com supervisor.
-- Campo CPF com máscara automática no formato `000.000.000-00`.
-- Campos de setor e função padronizados por menus suspensos.
-- Estrutura inicial da tabela de atividades no SQLite, já preparada com supervisor da atividade.
-- Exclusão lógica por inativação.
-- Telas futuras como placeholders com a mensagem `Tela em desenvolvimento`.
+1. Acesse a página de Releases do GitHub.
+2. Baixe o arquivo `SistemaAprendizes-v1.3.0-windows.zip`.
+3. Extraia o `.zip` em uma pasta do computador, por exemplo `Documentos`.
+4. Abra a pasta extraída `SistemaAprendizes`.
+5. Execute `SistemaAprendizes.exe`.
 
-Não há login, relatórios reais, histórico, avaliações ou registro funcional de atividades nesta versão.
+Não é necessário instalar Python.
 
-## Como Rodar Pelo Python
+Na primeira abertura, o sistema cria o banco de dados em uma pasta gravável do usuário:
 
-1. Abra o PowerShell na pasta do projeto.
-2. Crie e ative um ambiente virtual:
+```text
+%LOCALAPPDATA%\SistemaAprendizes\data\aprendizes.db
+```
+
+Por isso o programa pode ser executado mesmo quando a pasta do aplicativo estiver em um local protegido do Windows.
+
+## Para Desenvolvedor
+
+1. Clone o repositório.
+2. Abra o PowerShell na pasta do projeto.
+3. Crie e ative um ambiente virtual:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 ```
 
-3. Instale as dependências:
+4. Instale as dependências:
 
 ```powershell
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-4. Inicie o sistema:
+5. Rode pelo Python:
 
 ```powershell
 python main.py
 ```
 
-Também é possível abrir pelo arquivo:
+Ao rodar pelo Python, o banco de uso fica em:
+
+```text
+data\aprendizes.db
+```
+
+## Build Da Release Windows
+
+O projeto usa PyInstaller em modo `onedir`. A pasta final gerada é:
+
+```text
+dist\SistemaAprendizes
+```
+
+O executável final fica em:
+
+```text
+dist\SistemaAprendizes\SistemaAprendizes.exe
+```
+
+Build recomendado pelo arquivo `.spec`:
 
 ```powershell
-.\Abrir Sistema.bat
+python -m PyInstaller --noconfirm --clean SistemaAprendizes.spec
 ```
 
-Ao rodar pelo Python, o banco de uso fica em `data\aprendizes.db`.
+Comando direto equivalente:
 
-## Distribuição Windows
-
-O projeto está preparado para PyInstaller usando o modo `onedir`, com janela sem console e nome final `ProgramaAprendizes`.
-
-O executável gerado fica em:
-
-```text
-dist\ProgramaAprendizes\ProgramaAprendizes.exe
+```powershell
+pyinstaller --onedir --windowed --name SistemaAprendizes --icon "assets\icons\app.ico" --add-data "assets;assets" --add-data "data;data" --add-data "database;database" --add-data "views;views" --add-data "controllers;controllers" --add-data "services;services" --add-data "models;models" --add-data "config.py;." main.py
 ```
 
-No executável, o banco de uso não fica dentro da pasta interna do PyInstaller. Na primeira abertura, o sistema copia o banco inicial para:
+Se o Windows não reconhecer o comando `pyinstaller`, use:
 
-```text
-%LOCALAPPDATA%\ProgramaAprendizes\data\aprendizes.db
+```powershell
+python -m PyInstaller --onedir --windowed --name SistemaAprendizes --icon "assets\icons\app.ico" --add-data "assets;assets" --add-data "data;data" --add-data "database;database" --add-data "views;views" --add-data "controllers;controllers" --add-data "services;services" --add-data "models;models" --add-data "config.py;." main.py
 ```
 
-Isso evita erro de permissão quando o programa for colocado em uma pasta protegida do Windows.
+Para gerar o `.zip` da release:
 
-## Arquivos Empacotados
+```powershell
+Compress-Archive -Path "dist\SistemaAprendizes" -DestinationPath "dist\SistemaAprendizes-v1.3.0-windows.zip" -Force
+```
+
+## Arquivos Incluídos No Pacote
 
 - `assets\`: ícones e imagens da interface.
-- `assets\icons\app.ico`: ícone do aplicativo e do executável.
-- `data\aprendizes_inicial.db`: banco SQLite inicial vazio, usado como modelo.
-- `backups\`: pasta reservada para backups futuros.
-- `reports\`: pasta reservada para relatórios futuros.
-- `config.py`: configurações carregadas como módulo da aplicação.
-- Pacotes Python do sistema: `controllers`, `database`, `models`, `services` e `views`.
+- `assets\icons\app.ico`: ícone do aplicativo.
+- `data\aprendizes_inicial.db`: banco SQLite inicial vazio.
+- `data\opcoes.py`: listas padronizadas usadas pela interface.
+- `database\`: conexão, criação de tabelas e consultas SQL.
+- `views\`: telas e componentes visuais.
+- `controllers\`: ponte entre interface e serviços.
+- `services\`: regras de validação e fluxo de negócio.
+- `models\`: modelos de dados.
+- `config.py`: configuração de caminhos, recursos e banco.
+- `backups\` e `reports\`: pastas reservadas para versões futuras.
 
-O arquivo `data\aprendizes.db` é banco de uso local e não deve ser versionado.
+O banco local `data\aprendizes.db` não é empacotado nem versionado.
 
-## Build Com PyInstaller
+## Escopo Da V1.3
 
-Instale as dependências antes do build:
+- Janela principal com menu lateral fixo.
+- Dashboard com contadores reais do banco e áreas de atividades ainda vazias.
+- Cadastro de supervisores com nome, função, setor e status.
+- Cadastro de aprendizes com nome, CPF, setor, observação e status.
+- Cadastro de aprendizes sem vínculo fixo com supervisor.
+- Campo CPF com máscara automática no formato `000.000.000-00`.
+- Campos de setor e função padronizados por menus suspensos.
+- Estrutura inicial da tabela de atividades no SQLite.
+- Exclusão lógica por inativação.
+- Telas futuras como placeholders com a mensagem `Tela em desenvolvimento`.
 
-```powershell
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-Comando direto completo:
-
-```powershell
-pyinstaller --onedir --windowed --name ProgramaAprendizes --icon "assets\icons\app.ico" --add-data "assets;assets" --add-data "data\aprendizes_inicial.db;data" --add-data "backups;backups" --add-data "reports;reports" main.py
-```
-
-Também é possível usar a configuração versionada:
-
-```powershell
-pyinstaller --clean ProgramaAprendizes.spec
-```
-
-Se o Windows não reconhecer o comando `pyinstaller`, use a chamada pelo Python:
-
-```powershell
-python -m PyInstaller --clean ProgramaAprendizes.spec
-```
-
-Para refazer do zero, apague as pastas antigas antes:
-
-```powershell
-Remove-Item -Recurse -Force build, dist
-python -m PyInstaller --clean ProgramaAprendizes.spec
-```
-
-## Estrutura
-
-- `main.py`: ponto de entrada da aplicação.
-- `config.py`: caminhos do projeto, recursos empacotados e pastas de execução.
-- `database/`: conexão, migração/criação de tabelas e consultas SQL.
-- `models/`: modelos de dados.
-- `services/`: regras de validação e fluxo de negócio.
-- `controllers/`: ponte entre interface e serviços.
-- `views/`: telas e componentes visuais.
-- `data/opcoes.py`: listas padronizadas de setores e funções.
-- `data/aprendizes_inicial.db`: banco inicial para distribuição.
-- `assets/`: ícones e imagens.
-- `backups/` e `reports/`: pastas reservadas para versões futuras.
+Não há login, relatórios reais, histórico, avaliações ou registro funcional de atividades nesta versão.
 
 ## Checklist De Validação Em Outro Computador
 
-1. Copie a pasta inteira `dist\ProgramaAprendizes` para um computador Windows sem Python instalado.
-2. Abra `ProgramaAprendizes.exe`.
-3. Confirme que a janela abre sem terminal aparente.
-4. Confirme que o ícone aparece na janela ou na barra de tarefas.
-5. Cadastre um supervisor e feche o programa.
-6. Abra o programa novamente e confirme que o supervisor continua salvo.
-7. Cadastre um aprendiz e confirme que aparece na tabela.
-8. Confirme que a pasta `%LOCALAPPDATA%\ProgramaAprendizes\data` foi criada.
-9. Confirme que `%LOCALAPPDATA%\ProgramaAprendizes\data\aprendizes.db` existe.
-10. Mova a pasta `dist\ProgramaAprendizes` para outro local e abra o executável novamente.
-11. Teste em uma conta de usuário comum, sem permissões de administrador.
-12. Se o Windows Defender bloquear a execução, libere o aplicativo e repita o teste.
+1. Baixar `SistemaAprendizes-v1.3.0-windows.zip` pela release do GitHub.
+2. Extrair o `.zip`.
+3. Abrir `SistemaAprendizes.exe`.
+4. Confirmar que a janela abre sem terminal aparente.
+5. Confirmar que o ícone aparece na janela ou na barra de tarefas.
+6. Cadastrar um supervisor.
+7. Fechar e abrir o programa novamente.
+8. Confirmar que o supervisor continua salvo.
+9. Cadastrar um aprendiz.
+10. Confirmar que `%LOCALAPPDATA%\SistemaAprendizes\data\aprendizes.db` foi criado.
+11. Mover a pasta `SistemaAprendizes` para outro local e abrir novamente.
+12. Testar em uma conta comum, sem permissões de administrador.
